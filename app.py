@@ -1,21 +1,21 @@
-from flask import Flask
+from flask import Flask, render_template
 import threading
 from flask_socketio import SocketIO
 import multiprocessing as mp
 from main import main
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='threading')
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
 
 @app.route("/")
 def home():
-    return "LogSpy running..."
+    return render_template("index.html")
 
 
 def get_results():
     while True:
         result = result_queue.get()
-        # print(f'result from classifier: {result}')
+        print(f'result from classifier: {result}')
         socketio.emit("anomaly_update", result)
 
 
@@ -27,7 +27,6 @@ if __name__ == "__main__":
     threading.Thread(target=get_results, daemon=True).start()
 
     try:
-        # app.run(debug=True, use_reloader=False)
         socketio.run(app, debug=False, use_reloader=False)
     finally:
         main_process.terminate()

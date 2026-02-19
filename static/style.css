@@ -1,0 +1,397 @@
+/* Global & App Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+.app-container {
+    padding: 3rem 1.5rem;
+}
+
+.app-wrapper {
+    max-width: 56rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-box {
+    padding: 0.5rem;
+    background-color: rgba(59, 130, 246, 0.2);
+    border-radius: 0.5rem;
+    color: rgb(96, 165, 250);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+
+.title-text p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.status-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.connection-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid;
+}
+
+.connection-badge.online {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: rgb(52, 211, 153);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.connection-badge.offline {
+    background-color: rgba(107, 114, 128, 0.1);
+    color: rgb(156, 163, 175);
+    border-color: rgba(107, 114, 128, 0.2);
+}
+
+.update-info {
+    text-align: right;
+}
+
+.update-label {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+}
+
+.timestamp {
+    font-family: monospace;
+    color: rgba(96, 165, 250, 0.8);
+}
+
+/* Status Card Styles */
+.status-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.5s ease;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    text-align: center;
+}
+
+.status-card.anomaly {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.1);
+}
+
+.status-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.status-icon-wrapper {
+    padding: 1.5rem;
+    border-radius: 9999px;
+    transition: all 0.5s ease;
+    background: rgba(16, 185, 129, 0.2);
+    color: rgb(16, 185, 129);
+    display: inline-flex;
+}
+
+.status-card.anomaly .status-icon-wrapper {
+    background: rgba(239, 68, 68, 0.2);
+    color: rgb(239, 68, 68);
+}
+
+.status-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+    color: white;
+    margin-top: 0;
+}
+
+.status-description {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+/* History Table Styles */
+.history-container {
+    width: 100%;
+    background-color: rgba(17, 24, 39, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+}
+
+.history-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.history-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-collapse: collapse;
+}
+
+.history-thead {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+.history-th {
+    padding: 1rem 1.5rem;
+}
+
+.history-tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s;
+}
+
+.history-tbody tr:last-child {
+    border-bottom: none;
+}
+
+.history-tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.history-td {
+    padding: 1rem 1.5rem;
+}
+
+.history-timestamp {
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+}
+
+.history-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: rgba(239, 68, 68, 0.1);
+    color: rgb(248, 113, 113);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.history-reason {
+    color: white;
+    font-weight: 500;
+}
+
+.history-empty {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    overflow: hidden;
+    background-color: rgb(17, 24, 39);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.2);
+    transform: scale(0.95);
+    transition: transform 0.3s ease-out;
+}
+
+.modal-overlay.open .modal {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.modal-header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgb(248, 113, 113);
+}
+
+.modal-header-title h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-close-button {
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+.modal-message {
+    margin-top: 0.25rem;
+    font-size: 1.125rem;
+    color: white;
+    line-height: 1.6;
+}
+
+.modal-timestamp {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: monospace;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    padding-top: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-acknowledge-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(220, 38, 38);
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+}
+
+.modal-acknowledge-button:hover {
+    background-color: rgb(239, 68, 68);
+}

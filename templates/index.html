@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log-Spy</title>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="{{ url_for('static', filename='script.js')}}" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-wrapper">
+
+            <!-- Header -->
+            <header class="app-header">
+                <div class="title-group">
+                    <div class="icon-box">
+                        <i data-lucide="activity" size="32"></i>
+                    </div>
+                    <div class="title-text">
+                        <h1>Log-Spy</h1>
+                        <p>Real-time log-based anomaly detection system</p>
+                    </div>
+                </div>
+
+                <div class="status-group">
+                    <div id="connection-badge" class="connection-badge offline">
+                        <span id="wifi-icon-wrapper"><i data-lucide="wifi-off" size="14"></i></span>
+                        <span id="connection-text">OFFLINE</span>
+                    </div>
+
+                    <div class="update-info">
+                        <div class="update-label">Last Update</div>
+                        <div id="last-update" class="timestamp">Waiting for data...</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Error Banner (Hidden by default) -->
+            <div id="error-banner" style="
+                display: none;
+                padding: 1rem;
+                background-color: rgba(239, 68, 68, 0.1);
+                border: 1px solid rgba(239, 68, 68, 0.2);
+                color: #f87171;
+                border-radius: 0.5rem;
+                margin-bottom: 1rem;
+                font-size: 0.875rem;
+            ">
+                <span id="error-message"></span> - Make sure your Flask backend is running on port 5000.
+            </div>
+
+            <!-- Main Status Display -->
+            <main>
+                <div id="status-card" class="status-card">
+                    <div class="status-content">
+                        <div id="status-icon-wrapper" class="status-icon-wrapper">
+                            <!-- Icon injected by JS -->
+                            <i data-lucide="shield-check" size="64" stroke-width="1.5"></i>
+                        </div>
+
+                        <div>
+                            <h2 id="status-title" class="status-title">System Normal</h2>
+                            <p id="status-description" class="status-description">No irregularities detected in system
+                                logs.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- History Table -->
+            <section>
+                <div class="history-container">
+                    <div class="history-header">
+                        <i data-lucide="clock" size="20" color="#60a5fa"></i>
+                        <h3 class="history-title">Anomaly History</h3>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="history-table">
+                            <thead class="history-thead">
+                                <tr>
+                                    <th class="history-th">Timestamp</th>
+                                    <th class="history-th">Status</th>
+                                    <th class="history-th">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body" class="history-tbody">
+                                <!-- Rows injected by JS -->
+                                <tr>
+                                    <td colspan="3" class="history-empty">
+                                        No anomalies recorded yet.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Modal Popup -->
+        <div id="modal-overlay" class="modal-overlay">
+            <div class="modal">
+                <!-- Header -->
+                <div class="modal-header">
+                    <div class="modal-header-title">
+                        <i data-lucide="alert-triangle" size="24"></i>
+                        <h3>Anomaly Detected</h3>
+                    </div>
+                    <button id="modal-close-btn" class="modal-close-button">
+                        <i data-lucide="x" size="20"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <div>
+                        <span class="modal-label">Reason</span>
+                        <p id="modal-reason" class="modal-message">Unknown Error</p>
+                    </div>
+
+                    <div>
+                        <span class="modal-label">Timestamp</span>
+                        <p id="modal-timestamp" class="modal-timestamp">--:--:--</p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button id="modal-acknowledge-btn" class="modal-acknowledge-button">
+                        Acknowledge
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

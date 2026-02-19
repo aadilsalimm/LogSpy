@@ -15,7 +15,7 @@ class LogClassifier:
             prompt = f'''The given log messages are from linux journalctl.
             Analyze them and find if there is any anomalous behaviour or not.
             Give a one-word output strictly in the following JSON format:
-            {{"logs":<log sequence -> add all logs in the sequence>, "is_anomalous":<0/1>, "reason":<<concise description of reason in one or two lines>}}
+            {{"logs":<log sequence -> add all logs in the sequence>, "is_anomalous":<0/1>,"timestamp":<timestamp>,"reason":<concise description of reason in one or two lines>}}
             Remember: THE OUTPUT MUST STRICTLY IN THE ABOVE JSON FORMAT.
             Log messages: {log_msgs}'''
 
