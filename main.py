@@ -3,10 +3,11 @@ import json
 from log_shipper import LogShipper
 from log_classifierV1 import LogClassifier
 
-def main():
+def main(result_to_app):
     logs_from_shipper = mp.Queue()
     logs_to_classifier = mp.Queue()
     result_from_classifier = mp.Queue()
+    
     shipper = LogShipper(buffer_size=5, filter_logs=False)
     classifier = LogClassifier()
 
@@ -32,9 +33,10 @@ def main():
         # print(f'result: {result}')
 
         json_result = json.loads(result)
+        result_to_app.put(json_result)
         # is_anomalous = json_result.get("is_anomalous")
         # print(f'returned value: {is_anomalous}')
-        print(f'result: {json_result}')
+        # print(f'result: {json_result}')
 
         
 
