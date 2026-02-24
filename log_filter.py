@@ -4,6 +4,7 @@ import re
 def preprocess_logs(input_log):
     try:
         log_entry = json.loads(input_log.strip())
+        # print(f'Logs in filter: {log_entry}')
 
         cleaned_entry = {
             "systemd_unit": log_entry.get("_SYSTEMD_UNIT"),
@@ -17,6 +18,7 @@ def preprocess_logs(input_log):
 
         # Skip empty or invalid messages
         if cleaned_entry["message"]:
+            # print(f'Filtered logs: {cleaned_entry}')
             return cleaned_entry
 
     except json.JSONDecodeError as e:
@@ -59,6 +61,7 @@ def should_filter(input_log, drop_info_level=True):
         r"Started .*\.service",
         r"Deactivated successfully",
         r"Lockdown: systemd-logind: hibernation is restricted;",
+        r"Can't update stage views actor unnamed [MetaWindowActorX11]",
     ]
 
     COMPILED_PATTERNS = [re.compile(p) for p in MESSAGE_PATTERNS]

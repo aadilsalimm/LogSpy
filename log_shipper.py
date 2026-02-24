@@ -67,8 +67,6 @@ class LogShipper:
         filtered_log = preprocess_logs(log_entry)
         self.buffer.append(str(filtered_log))
 
-        self.buffer.append(log_entry)
-        
         if len(self.buffer) >= self.buffer_size:
             self.flush_buffer()
 
