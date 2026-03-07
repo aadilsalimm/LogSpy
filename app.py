@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-import threading
+from threading import Thread, Timer
+import webbrowser
 from flask_socketio import SocketIO
 import multiprocessing as mp
 from main import main
@@ -19,14 +20,19 @@ def get_results():
         socketio.emit("anomaly_update", result)
 
 
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:5000")
+
+
 if __name__ == "__main__":
     result_queue = mp.Queue()
     main_process = mp.Process(target=main, args=(result_queue,))
     main_process.start()
     
-    threading.Thread(target=get_results, daemon=True).start()
+    Thread(target=get_results, daemon=True).start()
 
     try:
+        Timer(1, open_browser).start()
         socketio.run(app, debug=False, use_reloader=False)
     finally:
         main_process.terminate()
