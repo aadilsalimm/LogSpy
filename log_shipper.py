@@ -83,6 +83,5 @@ class LogShipper:
         self.log_queue.put(logs)
 
 if __name__ == "__main__":
-    # Default buffer size is 10, can be changed here or via args if expanded
     shipper = LogShipper(buffer_size=10)
     shipper.start()

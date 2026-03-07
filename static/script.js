@@ -114,11 +114,9 @@ function toggleModal(open) {
     }
 }
 
-// // --- SIMULATION / DATA LOGIC ---
+// --- DATA LOGIC ---
 
-// /**
 //  * processData handles the logic when new data arrives (real or simulated).
-//  */
 function processData(newData) {
     state.data = newData;
     state.isConnected = true;
