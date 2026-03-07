@@ -77,7 +77,7 @@ class LogClassifier:
                     data = json.loads(line)
                     full_response += data["message"]["content"]
 
-            print(f'Raw classifier response: {full_response}')
+            # print(f'Raw classifier response: {full_response}')
 
             return json.dumps(extract_fields(full_response))
             
