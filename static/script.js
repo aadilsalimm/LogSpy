@@ -7,7 +7,11 @@ const state = {
     data: null,
     history: [],
     isModalOpen: false,
-    error: null
+    error: null,
+    fullHistory: [],
+    fullHistorySort: 'desc',
+    fullHistoryFilter: 'all',
+    selectedIds: new Set()
 };
 
 // --- DOM ELEMENTS ---
@@ -30,7 +34,18 @@ const elements = {
     modalReason: document.getElementById('modal-reason'),
     modalTimestamp: document.getElementById('modal-timestamp'),
     modalCloseBtn: document.getElementById('modal-close-btn'),
-    modalAckBtn: document.getElementById('modal-acknowledge-btn')
+    modalAckBtn: document.getElementById('modal-acknowledge-btn'),
+
+    showFullHistoryBtn: document.getElementById('show-full-history-btn'),
+    fullHistoryOverlay: document.getElementById('full-history-overlay'),
+    fullHistoryCloseBtn: document.getElementById('full-history-close-btn'),
+    fullHistoryBody: document.getElementById('full-history-body'),
+    fullHistorySortBtn: document.getElementById('full-history-sort-btn'),
+    sortLabel: document.getElementById('sort-label'),
+    fullHistoryFilter: document.getElementById('full-history-filter'),
+    fullHistoryDeleteBtn: document.getElementById('full-history-delete-btn'),
+    fullHistoryClearBtn: document.getElementById('full-history-clear-btn'),
+    fullHistorySelectAll: document.getElementById('full-history-select-all')
 };
 
 // --- UI UPDATE FUNCTIONS ---
@@ -112,6 +127,93 @@ function toggleModal(open) {
     }
 }
 
+// --- FULL HISTORY PANEL ---
+
+function toggleFullHistory(open) {
+    if (open) {
+        elements.fullHistoryOverlay.classList.add('open');
+    } else {
+        elements.fullHistoryOverlay.classList.remove('open');
+    }
+}
+
+function getFilteredSortedHistory() {
+    let data = [...state.fullHistory];
+
+    // Filter
+    if (state.fullHistoryFilter === 'anomalous') {
+        data = data.filter(e => e.is_anomalous === 1 || e.is_anomalous === true);
+    } else if (state.fullHistoryFilter === 'normal') {
+        data = data.filter(e => e.is_anomalous === 0 || e.is_anomalous === false);
+    }
+
+    // Sort by timestamp
+    data.sort((a, b) => {
+        const tA = new Date(a.timestamp).getTime();
+        const tB = new Date(b.timestamp).getTime();
+        return state.fullHistorySort === 'desc' ? tB - tA : tA - tB;
+    });
+
+    return data;
+}
+
+function renderFullHistory() {
+    const data = getFilteredSortedHistory();
+
+    if (data.length === 0) {
+        elements.fullHistoryBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="history-empty">No logs match the current filter.</td>
+            </tr>
+        `;
+        updateDeleteBtnState();
+        lucide.createIcons();
+        return;
+    }
+
+    elements.fullHistoryBody.innerHTML = data.map(entry => {
+        const id = entry.id ?? entry.timestamp;
+        const isChecked = state.selectedIds.has(id) ? 'checked' : '';
+        const isAnomaly = entry.is_anomalous === 1 || entry.is_anomalous === true;
+        const statusClass = isAnomaly ? 'anomalous' : 'normal';
+        const statusText = isAnomaly ? 'Anomaly' : 'Normal';
+        const selectedClass = state.selectedIds.has(id) ? 'selected' : '';
+
+        return `
+        <tr class="${selectedClass}" data-id="${id}">
+            <td class="history-td td-checkbox">
+                <input type="checkbox" class="row-checkbox full-history-row-cb" data-id="${id}" ${isChecked} />
+            </td>
+            <td class="history-td history-timestamp">
+                ${entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'N/A'}
+            </td>
+            <td class="history-td">
+                <span class="status-badge ${statusClass}">${statusText}</span>
+            </td>
+            <td class="history-td">
+                ${entry.component || 'N/A'}
+            </td>
+            <td class="history-td history-reason">
+                ${entry.reason || 'N/A'}
+            </td>
+        </tr>`;
+    }).join('');
+
+    updateDeleteBtnState();
+    updateSelectAllState();
+    lucide.createIcons();
+}
+
+function updateDeleteBtnState() {
+    elements.fullHistoryDeleteBtn.disabled = state.selectedIds.size === 0;
+}
+
+function updateSelectAllState() {
+    const visible = getFilteredSortedHistory();
+    const allChecked = visible.length > 0 && visible.every(e => state.selectedIds.has(e.id ?? e.timestamp));
+    elements.fullHistorySelectAll.checked = allChecked;
+}
+
 // --- DATA LOGIC ---
 
 //  * processData handles the logic when new data arrives (real or simulated).
@@ -135,20 +237,31 @@ function processData(newData) {
 }
 
 
+let socket;
+
 function startConnection() {
-    const socket = io('http://localhost:5000');
-    
+    socket = io('http://localhost:5000');
+
     socket.on("connect", () => {
         state.isConnected = true;
         console.log("socket connected.")
         updateHeader();
     });
-    
+
     socket.on("anomaly_update", (data) => {
         console.log("recived data: " + data)
         processData(data);
     });
-    
+
+    // Receive full history from backend
+    socket.on("full_history", (data) => {
+        console.log("Received full history:", data);
+        state.fullHistory = Array.isArray(data) ? data : [];
+        state.selectedIds.clear();
+        renderFullHistory();
+        toggleFullHistory(true);
+    });
+
     socket.on("disconnect", () => {
         state.isConnected = false;
         updateHeader();
@@ -168,4 +281,92 @@ elements.modalOverlay.addEventListener('click', (e) => {
     if (e.target === elements.modalOverlay) {
         toggleModal(false);
     }
+});
+
+// --- FULL HISTORY EVENT LISTENERS ---
+
+// Open full history panel — request data from backend
+elements.showFullHistoryBtn.addEventListener('click', () => {
+    elements.fullHistoryBody.innerHTML = `
+        <tr><td colspan="5" class="history-empty">Loading...</td></tr>
+    `;
+    toggleFullHistory(true);
+    if (socket && socket.connected) {
+        socket.emit('get_full_history');
+    }
+});
+
+// Close full history panel
+elements.fullHistoryCloseBtn.addEventListener('click', () => toggleFullHistory(false));
+elements.fullHistoryOverlay.addEventListener('click', (e) => {
+    if (e.target === elements.fullHistoryOverlay) {
+        toggleFullHistory(false);
+    }
+});
+
+// Sort toggle
+elements.fullHistorySortBtn.addEventListener('click', () => {
+    state.fullHistorySort = state.fullHistorySort === 'desc' ? 'asc' : 'desc';
+    elements.sortLabel.textContent = state.fullHistorySort === 'desc' ? 'Newest First' : 'Oldest First';
+    renderFullHistory();
+});
+
+// Filter
+elements.fullHistoryFilter.addEventListener('change', (e) => {
+    state.fullHistoryFilter = e.target.value;
+    state.selectedIds.clear();
+    renderFullHistory();
+});
+
+// Row checkbox delegation
+elements.fullHistoryBody.addEventListener('change', (e) => {
+    if (e.target.classList.contains('full-history-row-cb')) {
+        const id = e.target.dataset.id;
+        if (e.target.checked) {
+            state.selectedIds.add(isNaN(id) ? id : Number(id));
+        } else {
+            state.selectedIds.delete(isNaN(id) ? id : Number(id));
+        }
+        // Update row styling
+        const row = e.target.closest('tr');
+        row.classList.toggle('selected', e.target.checked);
+        updateDeleteBtnState();
+        updateSelectAllState();
+    }
+});
+
+// Select all checkbox
+elements.fullHistorySelectAll.addEventListener('change', (e) => {
+    const visible = getFilteredSortedHistory();
+    if (e.target.checked) {
+        visible.forEach(entry => state.selectedIds.add(entry.id ?? entry.timestamp));
+    } else {
+        visible.forEach(entry => state.selectedIds.delete(entry.id ?? entry.timestamp));
+    }
+    renderFullHistory();
+});
+
+// Delete selected
+elements.fullHistoryDeleteBtn.addEventListener('click', () => {
+    if (state.selectedIds.size === 0) return;
+    const idsToDelete = [...state.selectedIds];
+    if (socket && socket.connected) {
+        socket.emit('delete_logs', idsToDelete);
+    }
+    // Optimistically remove from local state
+    state.fullHistory = state.fullHistory.filter(e => !state.selectedIds.has(e.id ?? e.timestamp));
+    state.selectedIds.clear();
+    renderFullHistory();
+});
+
+// Clear all
+elements.fullHistoryClearBtn.addEventListener('click', () => {
+    if (!confirm('Are you sure you want to clear all history? This cannot be undone.')) return;
+    if (socket && socket.connected) {
+        socket.emit('clear_history');
+    }
+    // Optimistically clear local state
+    state.fullHistory = [];
+    state.selectedIds.clear();
+    renderFullHistory();
 });

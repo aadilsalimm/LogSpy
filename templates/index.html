@@ -100,9 +100,85 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="full-history-btn-wrapper">
+                        <button id="show-full-history-btn" class="show-full-history-btn">
+                            <i data-lucide="history" size="16"></i>
+                            Show Full History
+                        </button>
+                    </div>
                 </div>
             </section>
 
+        </div>
+
+        <!-- Full History Overlay -->
+        <div id="full-history-overlay" class="full-history-overlay">
+            <div class="full-history-panel">
+                <!-- Header -->
+                <div class="full-history-header">
+                    <div class="full-history-header-title">
+                        <i data-lucide="database" size="22"></i>
+                        <h3>Full Log History</h3>
+                    </div>
+                    <button id="full-history-close-btn" class="modal-close-button">
+                        <i data-lucide="x" size="20"></i>
+                    </button>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="full-history-toolbar">
+                    <div class="toolbar-left">
+                        <button id="full-history-sort-btn" class="toolbar-btn" title="Toggle sort order">
+                            <i data-lucide="arrow-down-up" size="14"></i>
+                            <span id="sort-label">Newest First</span>
+                        </button>
+
+                        <select id="full-history-filter" class="toolbar-select">
+                            <option value="all">All Logs</option>
+                            <option value="anomalous">Anomalous Only</option>
+                            <option value="normal">Normal Only</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-right">
+                        <button id="full-history-delete-btn" class="toolbar-btn danger" disabled
+                            title="Delete selected">
+                            <i data-lucide="trash-2" size="14"></i>
+                            Delete Selected
+                        </button>
+                        <button id="full-history-clear-btn" class="toolbar-btn danger-outline"
+                            title="Clear all history">
+                            <i data-lucide="trash" size="14"></i>
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="full-history-table-wrapper">
+                    <table class="history-table">
+                        <thead class="history-thead">
+                            <tr>
+                                <th class="history-th th-checkbox">
+                                    <input type="checkbox" id="full-history-select-all" class="row-checkbox" />
+                                </th>
+                                <th class="history-th">Timestamp</th>
+                                <th class="history-th">Status</th>
+                                <th class="history-th">Component</th>
+                                <th class="history-th">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="full-history-body" class="history-tbody">
+                            <tr>
+                                <td colspan="5" class="history-empty">
+                                    Click "Show Full History" to load data.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Modal Popup -->

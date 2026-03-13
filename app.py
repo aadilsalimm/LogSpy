@@ -15,6 +15,25 @@ def home():
     return render_template("index.html")
 
 
+# Socket.IO Event Handlers
+@socketio.on("get_full_history")
+def full_history_handler():
+    history = db.get_all_data()
+    socketio.emit("full_history", history)
+
+
+@socketio.on("delete_logs")
+def delete_logs_handler(ids):
+    if not ids or not isinstance(ids, list):
+        return
+    db.delete_data(ids)
+    
+
+@socketio.on("clear_history")
+def clear_history_handler():
+    db.clear_data()
+
+
 def get_results():
     while True:
         result = result_queue.get()
@@ -37,7 +56,7 @@ if __name__ == "__main__":
 
     try:
         Thread(target=run_server, daemon=True).start()
-        webview.create_window("Log-Spy", "http://127.0.0.1:5000")
+        webview.create_window(title="Log-Spy", url="http://127.0.0.1:5000", width=1200, height=800)
         webview.start()
     finally:
         print("Window closed - signalling Main-process shut-down...")
