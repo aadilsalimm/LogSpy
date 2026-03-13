@@ -29,6 +29,7 @@ class LogClassifier:
                 "is_anomalous": r'"is_anomalous"\s*:\s*([01])',
                 "timestamp":    r'"timestamp"\s*:\s*"?(\d+)"?',
                 "reason":       r'"reason"\s*:\s*"([^"]*)"',
+                "component":       r'"component"\s*:\s*"([^"]*)"',
             }
 
             results = {}
@@ -52,7 +53,7 @@ class LogClassifier:
             prompt = f'''The given log messages are from linux journalctl.
             Analyze them and find if there is any anomalous behaviour or not.
             Give output strictly in the following JSON format:
-            {{"is_anomalous":<0/1>,"timestamp":<timestamp of first log message>,"reason":<concise description of reason in one or two lines>}}
+            {{"is_anomalous":<0/1>,"timestamp":<timestamp of first log message>,"component":<component>,"reason":<concise description of reason in one or two lines>}}
             Remember: THE OUTPUT MUST STRICTLY IN THE ABOVE FORMAT WITH NO OTHER CHARACTERS.
             Log messages: {log_msgs}'''
 
