@@ -90,9 +90,7 @@ function updateHistory() {
                 ${entry.timestamp ? new Date(entry.timestamp).toLocaleTimeString() : 'N/A'}
             </td>
             <td class="history-td">
-                <span class="history-badge">
-                    <i data-lucide="alert-circle" size="12" style="margin-right:4px"></i> Anomaly
-                </span>
+                ${entry.component || 'N/A'}
             </td>
             <td class="history-td history-reason">
                 ${entry.reason}

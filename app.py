@@ -4,9 +4,11 @@ import webview
 from flask_socketio import SocketIO
 import multiprocessing as mp
 from main import main
+import db_ops as db
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+db.connect_db()
 
 @app.route("/")
 def home():
@@ -17,6 +19,7 @@ def get_results():
     while True:
         result = result_queue.get()
         print(f'result from classifier: {result}')
+        db.add_data(result)
         socketio.emit("anomaly_update", result)
 
 
@@ -38,6 +41,7 @@ if __name__ == "__main__":
         webview.start()
     finally:
         print("Window closed - signalling Main-process shut-down...")
+        db.close_db_connection()
         stop_event.set()    # signal main() to shut down gracefully
         
         main_process.join(timeout=8)
