@@ -3,8 +3,8 @@ from threading import Thread
 import webview
 from flask_socketio import SocketIO
 import multiprocessing as mp
-from main import main
-import db_ops as db
+from log_spy.main import main
+import log_spy.db_ops as db
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
@@ -12,7 +12,7 @@ db.connect_db()
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("log_spy/index.html")
 
 
 # Socket.IO Event Handlers

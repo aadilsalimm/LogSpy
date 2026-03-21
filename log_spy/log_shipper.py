@@ -1,6 +1,6 @@
 import subprocess
 import sys
-from log_filter import preprocess_logs, should_filter
+from .log_filter import preprocess_logs, should_filter
 
 class LogShipper:
     def __init__(self, buffer_size=10, filter_logs=True):

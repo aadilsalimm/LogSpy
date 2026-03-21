@@ -1,8 +1,8 @@
 import multiprocessing as mp
 import json
 from datetime import datetime, timezone, timedelta
-from log_shipper import LogShipper
-from log_classifierV2 import LogClassifier
+from .log_shipper import LogShipper
+from .log_classifier import LogClassifier
 
 def main(result_to_app, stop_event):
     logs_from_shipper = mp.Queue()

@@ -4,7 +4,7 @@ db_connection = None
 
 def connect_db():
     global db_connection
-    db_connection = sqlite3.connect('history.db', check_same_thread=False)
+    db_connection = sqlite3.connect('log_spy/history.db', check_same_thread=False)
     db_connection.row_factory = sqlite3.Row
 
     cur = db_connection.cursor()
@@ -23,13 +23,16 @@ def connect_db():
 
 def add_data(data):
     cur = db_connection.cursor()
-    query = f'''INSERT INTO history (timestamp, is_anomalous, component, description)
-                VALUES(
-                '{data['timestamp']}',
-                {data['is_anomalous']},
-                '{data['component']}',
-                '{data['reason']}')'''
-    cur.execute(query)
+    query = '''
+        INSERT INTO history (timestamp, is_anomalous, component, description)
+        VALUES (?, ?, ?, ?)
+    '''
+    cur.execute(query, (
+        data['timestamp'],
+        data['is_anomalous'],
+        data['component'],
+        data['reason']
+    ))
     db_connection.commit()
 
 
