@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log-Spy</title>
-    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Load Lucide Icons -->
-    <script src="{{ url_for('static', filename='lucide.min.js') }}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{{ url_for('static', filename='script.js')}}" defer></script>
 </head>
 
@@ -56,7 +56,7 @@
             </div>
 
             <!-- Main Status Display -->
-            <main>
+            <main class="status-row">
                 <div id="status-card" class="status-card">
                     <div class="status-content">
                         <div id="status-icon-wrapper" class="status-icon-wrapper">
@@ -71,6 +71,11 @@
                         </div>
                     </div>
                 </div>
+
+                <button id="troubleshooter-btn" class="troubleshooter-btn">
+                    <i data-lucide="wrench" size="64" stroke-width="1.5"></i>
+                    <span>Open Troubleshooter App</span>
+                </button>
             </main>
 
             <!-- History Table -->

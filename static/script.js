@@ -45,7 +45,8 @@ const elements = {
     fullHistoryFilter: document.getElementById('full-history-filter'),
     fullHistoryDeleteBtn: document.getElementById('full-history-delete-btn'),
     fullHistoryClearBtn: document.getElementById('full-history-clear-btn'),
-    fullHistorySelectAll: document.getElementById('full-history-select-all')
+    fullHistorySelectAll: document.getElementById('full-history-select-all'),
+    troubleshooterBtn: document.getElementById('troubleshooter-btn')
 };
 
 // --- UI UPDATE FUNCTIONS ---
@@ -275,6 +276,16 @@ startConnection();
 
 elements.modalCloseBtn.addEventListener('click', () => toggleModal(false));
 elements.modalAckBtn.addEventListener('click', () => toggleModal(false));
+
+// Open Troubleshooter App
+elements.troubleshooterBtn.addEventListener('click', () => {
+    if (socket && socket.connected) {
+        socket.emit('open_troubleshooter');
+        console.log('Troubleshooter event emitted.');
+    } else {
+        console.warn('Socket not connected. Cannot open troubleshooter.');
+    }
+});
 
 // Close modal on click outside
 elements.modalOverlay.addEventListener('click', (e) => {
