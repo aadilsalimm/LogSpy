@@ -277,15 +277,23 @@ startConnection();
 elements.modalCloseBtn.addEventListener('click', () => toggleModal(false));
 elements.modalAckBtn.addEventListener('click', () => toggleModal(false));
 
-// Open Troubleshooter App
+// Open Troubleshooter App — swipe transition
 elements.troubleshooterBtn.addEventListener('click', () => {
-    if (socket && socket.connected) {
-        socket.emit('open_troubleshooter');
-        console.log('Troubleshooter event emitted.');
-    } else {
-        console.warn('Socket not connected. Cannot open troubleshooter.');
-    }
+    document.body.classList.add('swipe-out-to-left');
+    setTimeout(() => {
+        window.location.href = '/troubleshooter';
+    }, 380);
 });
+
+// Entrance animation when returning from troubleshooter
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') === 'troubleshooter') {
+        document.body.classList.add('swipe-in-from-left');
+        // Clean URL without reloading
+        window.history.replaceState({}, '', '/');
+    }
+})();
 
 // Close modal on click outside
 elements.modalOverlay.addEventListener('click', (e) => {

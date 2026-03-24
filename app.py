@@ -5,6 +5,8 @@ from flask_socketio import SocketIO
 import multiprocessing as mp
 from log_spy.main import main
 import log_spy.db_ops as db
+import troubleshooter.troubleShooter as ts
+from troubleshooter.log_fetcher import fetch_logs
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
@@ -12,10 +14,14 @@ db.connect_db()
 
 @app.route("/")
 def home():
-    return render_template("log_spy/index.html")
+    return render_template("log_spy.html")
+
+@app.route("/troubleshooter")
+def troubleshooter():
+    return render_template("troubleshooter.html")
 
 
-# Socket.IO Event Handlers
+# Log-Spy Event Handlers
 @socketio.on("get_full_history")
 def full_history_handler():
     history = db.get_all_data()
@@ -32,6 +38,32 @@ def delete_logs_handler(ids):
 @socketio.on("clear_history")
 def clear_history_handler():
     db.clear_data()
+
+
+# Troubleshooter Event Handlers
+@socketio.on("troubleshoot")
+def handle_troubleshoot(data):
+    user_input = data.get("problem", "None")
+    timeframe = data.get("timeframe", "1h")
+
+    try:
+        # Step 1: Identify components
+        socketio.emit("troubleshoot_step", {"step": 1})
+        target_components = ts.get_target_comps(user_input=user_input, timeframe_str=timeframe)
+
+        # Step 2: Fetch logs
+        socketio.emit("troubleshoot_step", {"step": 2})
+        collected_logs = fetch_logs(target_components)
+
+        # Step 3: Analyze root cause
+        socketio.emit("troubleshoot_step", {"step": 3})
+        result = ts.find_root_cause(collected_logs, target_components)
+
+        # Sending result to front-end
+        socketio.emit("troubleshoot_result", result)
+        
+    except Exception as e:
+        socketio.emit("troubleshoot_error", {"message": str(e)})
 
 
 def get_results():

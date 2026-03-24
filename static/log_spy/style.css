@@ -6,6 +6,26 @@ body {
     color: white;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── Page Swipe Transitions ──────────────────────────────────── */
+@keyframes slideInFromLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes slideOutToLeft {
+    from { transform: translateX(0);     opacity: 1; }
+    to   { transform: translateX(-100%); opacity: 0; }
+}
+
+body.swipe-in-from-left {
+    animation: slideInFromLeft 0.4s ease-out forwards;
+}
+
+body.swipe-out-to-left {
+    animation: slideOutToLeft 0.4s ease-in forwards;
 }
 
 .app-container {
